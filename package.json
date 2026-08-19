@@ -6,8 +6,8 @@
   "scripts": {
     "dev": "bun run --hot src/app.ts",
     "check": "tsc --noEmit",
-    "build": "prisma generate && bun build ./src/app.ts --outdir ./dist --target=bun --minify",
-    "db:deploy": "prisma migrate deploy"
+    "build": "bunx --bun prisma generate && bun build ./src/app.ts --outdir ./dist --target=bun --minify",
+    "db:deploy": "bunx --bun prisma migrate deploy"
   },
   "devDependencies": {
     "@types/bcryptjs": "^3.0.0",
