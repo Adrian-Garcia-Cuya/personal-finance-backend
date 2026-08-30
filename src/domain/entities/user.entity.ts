@@ -4,7 +4,7 @@ export class UserEntity {
     public readonly email: string,
     public readonly password: string,
     public readonly name: string,
-    public readonly lastname: string,
+    public readonly lastName: string,
   ) {}
 
   static fromObject(object: { [key: string]: any }): UserEntity {
@@ -13,7 +13,7 @@ export class UserEntity {
       object.email,
       object.password,
       object.name,
-      object.lastname,
+      object.lastName,
     );
   }
 }
