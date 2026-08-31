@@ -1,8 +1,12 @@
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
-import { AuthRouter } from "./routes";
 import { prisma } from "../database/prisma";
+
+import { AuthRouter, accountRouter, categoryRouter, tagRouter } from "./routes";
+
+import { authMiddleware } from "./middlewares/auth.middleware";
+import { transactionRouter } from "./modules/transaction/router";
 
 export class Server {
   private app = new Hono().basePath("/api");
@@ -18,7 +22,14 @@ export class Server {
     this.app.get("/health", (c) => {
       return c.text("ok");
     });
+
     this.app.route("/auth", AuthRouter);
+
+    this.app.use(authMiddleware);
+    this.app.route("/category", categoryRouter);
+    this.app.route("/account", accountRouter);
+    this.app.route("/tag", tagRouter);
+    this.app.route("/transaction", transactionRouter);
 
     this.app.notFound((c) => {
       return c.json(

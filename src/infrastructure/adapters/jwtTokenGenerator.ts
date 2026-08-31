@@ -1,7 +1,7 @@
-import type { TokenGenerator } from "../ports/tokenGenerator";
 import * as jwt from "jsonwebtoken";
+import type { TokenGenerator } from "../ports/tokenGenerator";
 
-export class JwtTokenGenerator implements TokenGenerator {
+export const jwtTokenGenerator: TokenGenerator = {
   generate(userId: string, email: string): string {
     const payload = {
       userId,
@@ -13,5 +13,14 @@ export class JwtTokenGenerator implements TokenGenerator {
     });
 
     return token;
-  }
-}
+  },
+
+  verify(token: string): string {
+    const decodedToken = jwt.verify(token, process.env.JWT_SECRET) as {
+      userId: string;
+      email: string;
+    };
+
+    return decodedToken.userId;
+  },
+};

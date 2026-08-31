@@ -1,31 +1,30 @@
 import { Hono } from "hono";
-import AuthController from "./authController";
+import AuthController from "./auth.controller";
 import { LoginSchema } from "../schemas/auth/login.schema";
 import { RegisterSchema } from "../schemas/auth/register.schema";
-import { schemaValidator } from "../middlewares/schemaValidator";
+import { schemaValidator } from "../middlewares/schema-validator.middleware";
 import { UserDatasourceImpl } from "../../datasources/user.datasource.impl";
 import { UserRepositoryImpl } from "../../repositories/user.repository.impl";
 import { BycriptPasswordHasher } from "../../adapters/bycriptPasswordHasher";
-import { JwtTokenGenerator } from "../../adapters/jwtTokenGenerator";
-import { LoginUseCase } from "../../../application/useCases/auth/login.useCase";
-import { RegisterUseCase } from "../../../application/useCases/auth/register.useCase";
+import { jwtTokenGenerator } from "../../adapters/jwtTokenGenerator";
+import { LoginUseCase } from "../../../application/useCases/auth/login.use-case";
+import { RegisterUseCase } from "../../../application/useCases/auth/register.use-case";
 
 export const AuthRouter = new Hono();
 
 const datasource = new UserDatasourceImpl();
 const repository = new UserRepositoryImpl(datasource);
 const passwordHasher = new BycriptPasswordHasher();
-const tokenGenerator = new JwtTokenGenerator();
 
 const loginUseCase = new LoginUseCase(
   repository,
   passwordHasher,
-  tokenGenerator,
+  jwtTokenGenerator,
 );
 const registerUseCase = new RegisterUseCase(
   repository,
   passwordHasher,
-  tokenGenerator,
+  jwtTokenGenerator,
 );
 
 const authController = new AuthController(loginUseCase, registerUseCase);

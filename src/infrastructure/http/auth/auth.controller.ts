@@ -1,8 +1,8 @@
 import type { Context } from "hono";
-import { RegisterUseCase } from "../../../application/useCases/auth/register.useCase";
+import { RegisterUseCase } from "../../../application/useCases/auth/register.use-case";
 import type { RegisterSchema } from "../schemas/auth/register.schema";
 import type { LoginSchema } from "../schemas/auth/login.schema";
-import { LoginUseCase } from "../../../application/useCases/auth/login.useCase";
+import { LoginUseCase } from "../../../application/useCases/auth/login.use-case";
 
 class AuthController {
   constructor(

@@ -22,4 +22,151 @@ model User {
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime  @updatedAt @map("updated_at")
   deletedAt DateTime? @map("deleted_at")
+
+  categories   Category[]
+  accounts     Account[]
+  tags         Tag[]
+  transactions Transaction[]
+  budgets      Budget[]
+
+  @@map("users")
+}
+
+enum CategoryType {
+  income
+  expense
+}
+
+model Category {
+  id          Int          @id @default(autoincrement())
+  parentId    Int?         @map("parent_id")
+  userId      Int?         @map("user_id")
+  name        String
+  type        CategoryType
+  description String?
+  icon        String
+  color       String?
+  status      Boolean      @default(true)
+  createdAt   DateTime     @default(now()) @map("created_at")
+  updatedAt   DateTime     @updatedAt @map("updated_at")
+  deletedAt   DateTime?    @map("deleted_at")
+
+  parent   Category?  @relation("CategoryToCategory", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  children Category[] @relation("CategoryToCategory")
+
+  user         User?         @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  transactions Transaction[]
+  budgets      Budget[]
+
+  @@map("categories")
+}
+
+enum AccountType {
+  savings
+  cash
+  creditCard
+  debitCard
+  investment
+}
+
+model Account {
+  id             Int         @id @default(autoincrement())
+  userId         Int         @map("user_id")
+  name           String
+  accountType    AccountType
+  initialBalance Int         @default(0) @map("initial_balance")
+  description    String?
+  icon           String
+  color          String?
+  status         Boolean     @default(true)
+  createdAt      DateTime    @default(now()) @map("created_at")
+  updatedAt      DateTime    @updatedAt @map("updated_at")
+  deletedAt      DateTime?   @map("deleted_at")
+
+  user           User          @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  transactions   Transaction[] @relation("AccountTransactions")
+  toTransactions Transaction[] @relation("ToAccountTransactions")
+
+  @@map("accounts")
+}
+
+model Tag {
+  id        Int       @id @default(autoincrement())
+  userId    Int?      @map("user_id")
+  name      String
+  status    Boolean   @default(true)
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  user            User?            @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  transactionTags TransactionTag[]
+
+  @@map("tags")
+}
+
+enum TransactionType {
+  income
+  expense
+  transfer
+}
+
+model Transaction {
+  id              Int             @id @default(autoincrement())
+  userId          Int             @map("user_id")
+  categoryId      Int             @map("category_id")
+  accountId       Int             @map("account_id")
+  toAccountId     Int?            @map("to_account_id")
+  amount          Decimal         @db.Decimal
+  type            TransactionType
+  description     String?         @db.Text
+  transactionDate DateTime        @map("transaction_date") @db.Date
+  createdAt       DateTime        @default(now()) @map("created_at")
+  updatedAt       DateTime        @updatedAt @map("updated_at")
+  deletedAt       DateTime?       @map("deleted_at")
+
+  user            User             @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  category        Category         @relation(fields: [categoryId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  account         Account          @relation("AccountTransactions", fields: [accountId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  toAccount       Account?         @relation("ToAccountTransactions", fields: [toAccountId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  transactionTags TransactionTag[]
+
+  @@map("transactions")
+}
+
+model TransactionTag {
+  id            Int @id @default(autoincrement())
+  tagId         Int @map("tag_id")
+  transactionId Int @map("transaction_id")
+
+  tag         Tag         @relation(fields: [tagId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  transaction Transaction @relation(fields: [transactionId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@map("transaction_tag")
+}
+
+enum Periodicity {
+  daily
+  weekly
+  monthly
+  yearly
+}
+
+model Budget {
+  id          Int         @id @default(autoincrement())
+  userId      Int         @map("user_id")
+  categoryId  Int         @map("category_id")
+  name        String
+  amount      Decimal     @db.Decimal
+  startDate   DateTime    @map("start_date") @db.Date
+  endDate     DateTime    @map("end_date") @db.Date
+  periodicity Periodicity
+  createdAt   DateTime    @default(now()) @map("created_at")
+  updatedAt   DateTime    @updatedAt @map("updated_at")
+  deletedAt   DateTime?   @map("deleted_at")
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  category Category @relation(fields: [categoryId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@map("budgets")
 }

@@ -2,6 +2,14 @@
   "include": ["src/**/*", "env.d.ts"],
   "compilerOptions": {
     // Environment setup & latest features
+    "paths": {
+      "@/*": ["./src/*"],
+      "@domain/*": ["./src/domain/*"],
+      "@application/*": ["./src/application/*"],
+      "@infrastructure/*": ["./src/infrastructure/*"],
+      "@presentation/*": ["./src/presentation/*"],
+      "@generated/*": ["./generated/*"]
+    },
     "lib": ["ESNext"],
     "target": "ES2023",
     "module": "ESNext",
