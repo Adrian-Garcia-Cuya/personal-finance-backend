@@ -74,7 +74,7 @@ model Account {
   userId         Int         @map("user_id")
   name           String
   accountType    AccountType
-  initialBalance Int         @default(0) @map("initial_balance")
+  initialBalance Decimal     @default(0) @map("initial_balance") @db.Decimal
   description    String?
   icon           String
   color          String?
