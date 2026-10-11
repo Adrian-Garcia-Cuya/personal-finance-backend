@@ -7,6 +7,7 @@ import { UserDatasourceImpl } from "../../datasources/user.datasource.impl";
 import { UserRepositoryImpl } from "../../repositories/user.repository.impl";
 import { BycriptPasswordHasher } from "../../adapters/bycriptPasswordHasher";
 import { jwtTokenGenerator } from "../../adapters/jwtTokenGenerator";
+import { UuidGenerator } from "../../adapters/uuidGenerator";
 import { LoginUseCase } from "../../../application/useCases/auth/login.use-case";
 import { RegisterUseCase } from "../../../application/useCases/auth/register.use-case";
 
@@ -15,6 +16,7 @@ export const AuthRouter = new Hono();
 const datasource = new UserDatasourceImpl();
 const repository = new UserRepositoryImpl(datasource);
 const passwordHasher = new BycriptPasswordHasher();
+const uuidGenerator = new UuidGenerator();
 
 const loginUseCase = new LoginUseCase(
   repository,
@@ -25,6 +27,7 @@ const registerUseCase = new RegisterUseCase(
   repository,
   passwordHasher,
   jwtTokenGenerator,
+  uuidGenerator,
 );
 
 const authController = new AuthController(loginUseCase, registerUseCase);

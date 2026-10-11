@@ -7,9 +7,9 @@ export const CreateCategorySchema = z.object({
     error: () => ({ message: "Invalid category type" }),
   }),
   icon: z.string().min(1, "Icon is required"),
-  parentId: z.number().optional(),
+  parentId: z.string().optional(),
   description: z.string().optional(),
   color: z.string().optional(),
 });
 
-export type CreateCategorySchema = z.infer<typeof CreateCategorySchema>;
+export type CreateCategoryInput = z.infer<typeof CreateCategorySchema>;

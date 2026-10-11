@@ -9,9 +9,7 @@ export class TransactionController {
   getFormData = async (c: Context) => {
     const userId = c.get("userId") as string;
 
-    const result = await this.getRegistrationFormUseCase.execute(
-      Number(userId),
-    );
+    const result = await this.getRegistrationFormUseCase.execute(userId);
 
     return c.json(result, 200);
   };

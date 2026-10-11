@@ -1,4 +1,4 @@
-import type { PasswordHasher } from "../../domain/ports/passwordHasher";
+import type { PasswordHasher } from "../../application/ports/passwordHasher";
 import * as bcryptjs from "bcryptjs";
 
 export class BycriptPasswordHasher implements PasswordHasher {

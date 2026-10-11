@@ -1,6 +1,8 @@
+import type { IdGenerator } from "@/application/ports/idGenerator";
+import { UserEntity } from "../../../domain/entities/user.entity";
 import type { UserRepository } from "../../../domain/repositories/user.repository";
-import type { PasswordHasher } from "../../../domain/ports/passwordHasher";
-import type { TokenGenerator } from "../../../infrastructure/ports/tokenGenerator";
+import type { PasswordHasher } from "../../ports/passwordHasher";
+import type { TokenGenerator } from "../../ports/tokenGenerator";
 import type { LoginResponseDTO } from "../../dtos/auth/loginResponse.dto";
 import type { RegisterDTO } from "../../dtos/auth/register.dto";
 
@@ -9,6 +11,7 @@ export class RegisterUseCase {
     private readonly userRepository: UserRepository,
     private readonly passwordHasher: PasswordHasher,
     private readonly tokenGenerator: TokenGenerator,
+    private readonly idGenerator: IdGenerator,
   ) {}
 
   async execute(dto: RegisterDTO): Promise<LoginResponseDTO> {
@@ -20,19 +23,23 @@ export class RegisterUseCase {
 
     const hashedPassword = await this.passwordHasher.hash(dto.password);
 
-    const user = await this.userRepository.create(
-      dto.name,
+    const user = new UserEntity(
+      this.idGenerator.generate(),
       dto.email,
       hashedPassword,
+      dto.name,
+      "",
     );
 
-    const token = this.tokenGenerator.generate(user.id, user.email);
+    const created = await this.userRepository.create(user);
+
+    const token = this.tokenGenerator.generate(created.id, created.email);
 
     return {
       user: {
-        id: user.id,
-        email: user.email,
-        name: user.name,
+        id: created.id,
+        email: created.email,
+        name: created.name,
       },
       token,
     };

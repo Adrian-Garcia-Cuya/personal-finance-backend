@@ -12,4 +12,4 @@ export const CreateAccountSchema = z.object({
   color: z.string().optional(),
 });
 
-export type CreateAccountSchema = z.infer<typeof CreateAccountSchema>;
+export type CreateAccountInput = z.infer<typeof CreateAccountSchema>;

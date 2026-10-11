@@ -1,17 +1,22 @@
-import type { CreateTagDTO } from "@domain/dtos";
 import type { TagDatasource } from "@domain/datasources";
 import { TagEntity } from "@domain/entities";
 import { prisma } from "../database/prisma";
 
 export class TagDatasourceImpl implements TagDatasource {
-  async create(createTagDto: CreateTagDTO): Promise<TagEntity> {
-    const tag = await prisma.tag.create({
-      data: createTagDto,
+  async create(tag: TagEntity): Promise<TagEntity> {
+    const created = await prisma.tag.create({
+      data: {
+        id: tag.id,
+        name: tag.name,
+        status: tag.status,
+        user: tag.userId ? { connect: { id: tag.userId } } : undefined,
+      },
     });
-    return TagEntity.fromObject(tag);
+
+    return TagEntity.fromObject(created);
   }
 
-  async findAll(userId: number): Promise<TagEntity[]> {
+  async findAll(userId: string): Promise<TagEntity[]> {
     const tags = await prisma.tag.findMany({
       where: {
         status: true,

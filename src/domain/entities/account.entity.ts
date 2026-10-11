@@ -8,8 +8,8 @@ export enum AccountType {
 
 export class AccountEntity {
   constructor(
-    public readonly id: number,
-    public readonly userId: number,
+    public readonly id: string,
+    public readonly userId: string,
     public readonly name: string,
     public readonly accountType: AccountType,
     public readonly initialBalance: number,

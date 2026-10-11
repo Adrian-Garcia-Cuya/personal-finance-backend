@@ -12,7 +12,7 @@ export class GetRegistrationFormUseCase {
     private readonly tagRepository: TagRepository,
   ) {}
 
-  async execute(userId: number): Promise<RegistrationFormDataDTO> {
+  async execute(userId: string): Promise<RegistrationFormDataDTO> {
     const [categories, accounts, tags] = await Promise.all([
       this.categoryRepository.findAll(userId),
       this.accountRepository.findAll(userId),

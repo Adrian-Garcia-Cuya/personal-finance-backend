@@ -1,16 +1,15 @@
 import type { TagDatasource } from "@/domain/datasources";
-import type { CreateTagDTO } from "@domain/dtos";
 import type { TagEntity } from "@domain/entities";
 import type { TagRepository } from "@domain/repositories";
 
 export class TagRepositoryImpl implements TagRepository {
   constructor(private readonly tagDatasource: TagDatasource) {}
 
-  create(createTagDto: CreateTagDTO): Promise<TagEntity> {
-    return this.tagDatasource.create(createTagDto);
+  create(tag: TagEntity): Promise<TagEntity> {
+    return this.tagDatasource.create(tag);
   }
 
-  findAll(userId: number): Promise<TagEntity[]> {
+  findAll(userId: string): Promise<TagEntity[]> {
     return this.tagDatasource.findAll(userId);
   }
 }

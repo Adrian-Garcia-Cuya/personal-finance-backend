@@ -1,4 +1,4 @@
-import type { TokenGenerator } from "@/infrastructure/ports/tokenGenerator";
+import type { TokenGenerator } from "@/application/ports/tokenGenerator";
 import type { UserRepository } from "../../../domain/repositories/user.repository";
 import type { BycriptPasswordHasher } from "../../../infrastructure/adapters/bycriptPasswordHasher";
 import type { LoginResponseDTO } from "../../dtos/auth/loginResponse.dto";

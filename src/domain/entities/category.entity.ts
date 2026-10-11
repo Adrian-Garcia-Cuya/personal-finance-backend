@@ -5,13 +5,13 @@ export enum CategoryType {
 
 export class CategoryEntity {
   constructor(
-    public readonly id: number,
+    public readonly id: string,
     public readonly name: string,
     public readonly type: CategoryType,
     public readonly icon: string,
     public readonly status: boolean,
-    public readonly userId?: number | null,
-    public readonly parentId?: number | null,
+    public readonly userId?: string | null,
+    public readonly parentId?: string | null,
     public readonly description?: string | null,
     public readonly color?: string | null,
   ) {}

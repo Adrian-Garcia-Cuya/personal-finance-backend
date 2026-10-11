@@ -2,7 +2,7 @@ import type { Context } from "hono";
 
 import type { CreateTagUseCase } from "@/application/useCases/tag/create-tag.use-case";
 import type { GetAllTagsUseCase } from "@/application/useCases/tag/get-all-tag.use-case";
-import type { CreateTagSchema } from "../../schemas/tag/create-tag.schema";
+import type { CreateTagInput } from "../../schemas/tag/create-tag.schema";
 
 export class TagController {
   constructor(
@@ -11,12 +11,12 @@ export class TagController {
   ) {}
 
   create = async (c: Context) => {
-    const body = c.req.valid("json" as never) as CreateTagSchema;
+    const body = c.req.valid("json" as never) as CreateTagInput;
     const userId = c.get("userId") as string;
 
     const result = await this.createTagUseCase.create({
       ...body,
-      userId: Number(userId),
+      userId,
     });
 
     return c.json(result, 201);
@@ -24,7 +24,7 @@ export class TagController {
 
   findAll = async (c: Context) => {
     const userId = c.get("userId") as string;
-    const result = await this.getAllTagsUseCase.execute(Number(userId));
+    const result = await this.getAllTagsUseCase.execute(userId);
 
     return c.json(result, 200);
   };

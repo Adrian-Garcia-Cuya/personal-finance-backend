@@ -3,6 +3,7 @@ import { CreateCategoryUseCase } from "@/application/useCases/category/create-ca
 import { GetAllCategoriesUseCase } from "@/application/useCases/category/get-all-categories.use-case";
 import { CategoryDatasourceImpl } from "@/infrastructure/datasources/category.datasource.impl";
 import { CategoryRepositoryImpl } from "@/infrastructure/repositories/category.repository.impl";
+import { UuidGenerator } from "@/infrastructure/adapters/uuidGenerator";
 
 import { CategoryController } from "./category.controller";
 import { schemaValidator } from "../../middlewares/schema-validator.middleware";
@@ -12,7 +13,11 @@ export const categoryRouter = new Hono();
 
 const datasource = new CategoryDatasourceImpl();
 const repository = new CategoryRepositoryImpl(datasource);
-const createCategoryUseCase = new CreateCategoryUseCase(repository);
+const uuidGenerator = new UuidGenerator();
+const createCategoryUseCase = new CreateCategoryUseCase(
+  repository,
+  uuidGenerator,
+);
 const getAllCategoriesUseCase = new GetAllCategoriesUseCase(repository);
 const controller = new CategoryController(
   createCategoryUseCase,

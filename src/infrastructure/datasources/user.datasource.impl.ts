@@ -10,15 +10,17 @@ export class UserDatasourceImpl implements UserDatasource {
     return UserEntity.fromObject(user);
   }
 
-  async create(
-    name: string,
-    email: string,
-    password: string,
-  ): Promise<UserEntity> {
-    const user = await prisma.user.create({
-      data: { name, email, password },
+  async create(user: UserEntity): Promise<UserEntity> {
+    const created = await prisma.user.create({
+      data: {
+        id: user.id,
+        name: user.name,
+        lastName: user.lastName,
+        email: user.email,
+        password: user.password,
+      },
     });
 
-    return UserEntity.fromObject(user);
+    return UserEntity.fromObject(created);
   }
 }

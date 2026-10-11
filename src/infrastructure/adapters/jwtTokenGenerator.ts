@@ -1,5 +1,5 @@
 import * as jwt from "jsonwebtoken";
-import type { TokenGenerator } from "../ports/tokenGenerator";
+import type { TokenGenerator } from "../../application/ports/tokenGenerator";
 
 export const jwtTokenGenerator: TokenGenerator = {
   generate(userId: string, email: string): string {

@@ -1,11 +1,28 @@
-import type { CreateCategoryDTO } from "@/domain/dtos/category/create-category.dto";
+import type { IdGenerator } from "@/application/ports/idGenerator";
+import type { CreateCategoryDTO } from "@/application/dtos/category/create-category.dto";
+import { CategoryEntity } from "@/domain/entities";
 import type { CategoryRepository } from "@/domain/repositories";
 
 export class CreateCategoryUseCase {
-  constructor(private categoryRepository: CategoryRepository) {}
+  constructor(
+    private categoryRepository: CategoryRepository,
+    private idGenerator: IdGenerator,
+  ) {}
 
   async create(data: CreateCategoryDTO) {
-    await this.categoryRepository.create(data);
+    const category = new CategoryEntity(
+      this.idGenerator.generate(),
+      data.name,
+      data.type,
+      data.icon,
+      true,
+      data.userId,
+      data.parentId,
+      data.description,
+      data.color,
+    );
+
+    await this.categoryRepository.create(category);
 
     return {
       success: true,
@@ -13,7 +30,7 @@ export class CreateCategoryUseCase {
     };
   }
 
-  async findAll(userId: number) {
+  async findAll(userId: string) {
     return this.categoryRepository.findAll(userId);
   }
 }

@@ -9,11 +9,7 @@ export class UserRepositoryImpl implements UserRepository {
     return await this.datasource.getByEmail(email);
   }
 
-  async create(
-    name: string,
-    email: string,
-    password: string,
-  ): Promise<UserEntity> {
-    return await this.datasource.create(name, email, password);
+  async create(user: UserEntity): Promise<UserEntity> {
+    return await this.datasource.create(user);
   }
 }

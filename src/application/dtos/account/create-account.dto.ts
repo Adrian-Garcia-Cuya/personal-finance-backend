@@ -1,3 +1,11 @@
-import type { CreateAccountDTO as CreateAccountInput } from "@/domain/dtos/account/create-account.dto";
+import type { AccountType } from "@/domain/entities";
 
-export type CreateAccountDTO = Omit<CreateAccountInput, "userId">;
+export interface CreateAccountDTO {
+  name: string;
+  userId: string;
+  accountType: AccountType;
+  initialBalance: number;
+  icon: string;
+  description?: string | null;
+  color?: string | null;
+}

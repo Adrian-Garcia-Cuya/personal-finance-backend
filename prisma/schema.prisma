@@ -13,7 +13,7 @@ datasource db {
 }
 
 model User {
-  id        Int       @id @default(autoincrement())
+  id        String    @id @default(uuid())
   name      String
   lastName  String?   @map("last_name")
   email     String    @unique
@@ -38,9 +38,9 @@ enum CategoryType {
 }
 
 model Category {
-  id          Int          @id @default(autoincrement())
-  parentId    Int?         @map("parent_id")
-  userId      Int?         @map("user_id")
+  id          String       @id @default(uuid())
+  parentId    String?      @map("parent_id")
+  userId      String?      @map("user_id")
   name        String
   type        CategoryType
   description String?
@@ -70,8 +70,8 @@ enum AccountType {
 }
 
 model Account {
-  id             Int         @id @default(autoincrement())
-  userId         Int         @map("user_id")
+  id             String      @id @default(uuid())
+  userId         String      @map("user_id")
   name           String
   accountType    AccountType
   initialBalance Decimal     @default(0) @map("initial_balance") @db.Decimal
@@ -91,8 +91,8 @@ model Account {
 }
 
 model Tag {
-  id        Int       @id @default(autoincrement())
-  userId    Int?      @map("user_id")
+  id        String    @id @default(uuid())
+  userId    String?   @map("user_id")
   name      String
   status    Boolean   @default(true)
   createdAt DateTime  @default(now()) @map("created_at")
@@ -112,11 +112,11 @@ enum TransactionType {
 }
 
 model Transaction {
-  id              Int             @id @default(autoincrement())
-  userId          Int             @map("user_id")
-  categoryId      Int             @map("category_id")
-  accountId       Int             @map("account_id")
-  toAccountId     Int?            @map("to_account_id")
+  id              String          @id @default(uuid())
+  userId          String          @map("user_id")
+  categoryId      String          @map("category_id")
+  accountId       String          @map("account_id")
+  toAccountId     String?         @map("to_account_id")
   amount          Decimal         @db.Decimal
   type            TransactionType
   description     String?         @db.Text
@@ -135,9 +135,9 @@ model Transaction {
 }
 
 model TransactionTag {
-  id            Int @id @default(autoincrement())
-  tagId         Int @map("tag_id")
-  transactionId Int @map("transaction_id")
+  id            String @id @default(uuid())
+  tagId         String @map("tag_id")
+  transactionId String @map("transaction_id")
 
   tag         Tag         @relation(fields: [tagId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   transaction Transaction @relation(fields: [transactionId], references: [id], onDelete: NoAction, onUpdate: NoAction)
@@ -153,9 +153,9 @@ enum Periodicity {
 }
 
 model Budget {
-  id          Int         @id @default(autoincrement())
-  userId      Int         @map("user_id")
-  categoryId  Int         @map("category_id")
+  id          String      @id @default(uuid())
+  userId      String      @map("user_id")
+  categoryId  String      @map("category_id")
   name        String
   amount      Decimal     @db.Decimal
   startDate   DateTime    @map("start_date") @db.Date

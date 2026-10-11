@@ -3,6 +3,7 @@ import { CreateAccountUseCase } from "@/application/useCases/account/create-acco
 import { GetAllAccountsUseCase } from "@/application/useCases/account/get-all-accounts.use-case";
 import { AccountDatasourceImpl } from "@/infrastructure/datasources/account.datasource.impl";
 import { AccountRepositoryImpl } from "@/infrastructure/repositories/account.repository.impl";
+import { UuidGenerator } from "@/infrastructure/adapters/uuidGenerator";
 
 import { AccountController } from "./account.controller";
 import { schemaValidator } from "../../middlewares/schema-validator.middleware";
@@ -12,7 +13,11 @@ export const accountRouter = new Hono();
 
 const datasource = new AccountDatasourceImpl();
 const repository = new AccountRepositoryImpl(datasource);
-const createAccountUseCase = new CreateAccountUseCase(repository);
+const uuidGenerator = new UuidGenerator();
+const createAccountUseCase = new CreateAccountUseCase(
+  repository,
+  uuidGenerator,
+);
 const getAllAccountsUseCase = new GetAllAccountsUseCase(repository);
 const controller = new AccountController(
   createAccountUseCase,

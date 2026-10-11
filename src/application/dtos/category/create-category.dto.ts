@@ -1,3 +1,11 @@
-import type { CreateCategoryDTO as CreateCategoryInput } from "@/domain/dtos/category/create-category.dto";
+import { CategoryType } from "@/domain/entities";
 
-export type CreateCategoryDTO = Omit<CreateCategoryInput, "userId">;
+export interface CreateCategoryDTO {
+  name: string;
+  userId: string;
+  type: CategoryType;
+  icon: string;
+  parentId?: string;
+  description?: string;
+  color?: string;
+}

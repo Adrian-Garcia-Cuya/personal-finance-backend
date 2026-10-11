@@ -2,7 +2,7 @@ import type { Context } from "hono";
 
 import type { CreateCategoryUseCase } from "@/application/useCases/category/create-category.use-case";
 import type { GetAllCategoriesUseCase } from "@/application/useCases/category/get-all-categories.use-case";
-import type { CreateCategorySchema } from "../../schemas/category/create-category.schema";
+import type { CreateCategoryInput } from "../../schemas/category/create-category.schema";
 
 export class CategoryController {
   constructor(
@@ -11,12 +11,12 @@ export class CategoryController {
   ) {}
 
   create = async (c: Context) => {
-    const body = c.req.valid("json" as never) as CreateCategorySchema;
+    const body = c.req.valid("json" as never) as CreateCategoryInput;
     const userId = c.get("userId") as string;
 
     const result = await this.createCategoryUseCase.create({
       ...body,
-      userId: Number(userId),
+      userId,
     });
 
     return c.json(result, 201);
@@ -24,7 +24,7 @@ export class CategoryController {
 
   findAll = async (c: Context) => {
     const userId = c.get("userId") as string;
-    const result = await this.getAllCategoriesUseCase.execute(Number(userId));
+    const result = await this.getAllCategoriesUseCase.execute(userId);
 
     return c.json(result, 200);
   };
