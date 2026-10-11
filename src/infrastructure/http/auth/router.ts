@@ -1,45 +1,11 @@
 import { Hono } from "hono";
-import AuthController from "./auth.controller";
-import { LoginSchema } from "../schemas/auth/login.schema";
-import { RegisterSchema } from "../schemas/auth/register.schema";
-import { schemaValidator } from "../middlewares/schema-validator.middleware";
-import { UserDatasourceImpl } from "../../datasources/user.datasource.impl";
-import { UserRepositoryImpl } from "../../repositories/user.repository.impl";
-import { BycriptPasswordHasher } from "../../adapters/bycriptPasswordHasher";
-import { jwtTokenGenerator } from "../../adapters/jwtTokenGenerator";
-import { UuidGenerator } from "../../adapters/uuidGenerator";
-import { LoginUseCase } from "../../../application/useCases/auth/login.use-case";
-import { RegisterUseCase } from "../../../application/useCases/auth/register.use-case";
+import type { AuthController } from "./auth.controller";
 
-export const AuthRouter = new Hono();
+export const createAuthRouter = (controller: AuthController) => {
+  const authRouter = new Hono();
 
-const datasource = new UserDatasourceImpl();
-const repository = new UserRepositoryImpl(datasource);
-const passwordHasher = new BycriptPasswordHasher();
-const uuidGenerator = new UuidGenerator();
+  authRouter.post("/login", ...controller.login);
+  authRouter.post("/register", ...controller.register);
 
-const loginUseCase = new LoginUseCase(
-  repository,
-  passwordHasher,
-  jwtTokenGenerator,
-);
-const registerUseCase = new RegisterUseCase(
-  repository,
-  passwordHasher,
-  jwtTokenGenerator,
-  uuidGenerator,
-);
-
-const authController = new AuthController(loginUseCase, registerUseCase);
-
-AuthRouter.post(
-  "/login",
-  schemaValidator("json", LoginSchema),
-  authController.login,
-);
-
-AuthRouter.post(
-  "/register",
-  schemaValidator("json", RegisterSchema),
-  authController.register,
-);
+  return authRouter;
+};

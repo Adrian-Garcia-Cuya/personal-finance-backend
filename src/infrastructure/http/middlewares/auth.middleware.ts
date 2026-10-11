@@ -1,7 +1,7 @@
 import { jwtTokenGenerator } from "@/infrastructure/adapters/jwtTokenGenerator";
-import type { Context, Next } from "hono";
+import { factory } from "../factory";
 
-export const authMiddleware = async (c: Context, next: Next) => {
+export const authMiddleware = factory.createMiddleware(async (c, next) => {
   const authorization = c.req.header("Authorization");
   if (!authorization) {
     return c.json(
@@ -38,4 +38,4 @@ export const authMiddleware = async (c: Context, next: Next) => {
   c.set("userId", userId);
 
   await next();
-};
+});

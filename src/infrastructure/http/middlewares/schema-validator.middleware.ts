@@ -1,10 +1,13 @@
 import { zValidator } from "@hono/zod-validator";
+import { z, ZodType } from "zod";
 import type { ValidationTargets } from "hono";
-import { z, type ZodTypeAny } from "zod";
 
-export const schemaValidator = <T extends keyof ValidationTargets>(
+export const schemaValidator = <
+  T extends keyof ValidationTargets,
+  S extends ZodType,
+>(
   target: T,
-  schema: ZodTypeAny,
+  schema: S,
 ) => {
   return zValidator(target, schema, (result, c) => {
     if (!result.success) {

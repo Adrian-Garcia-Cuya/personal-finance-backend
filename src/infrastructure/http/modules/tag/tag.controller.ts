@@ -1,8 +1,8 @@
-import type { Context } from "hono";
-
+import { CreateTagSchema } from "../../schemas/tag/create-tag.schema";
+import { factory } from "../../factory";
+import { schemaValidator } from "../../middlewares/schema-validator.middleware";
 import type { CreateTagUseCase } from "@/application/useCases/tag/create-tag.use-case";
 import type { GetAllTagsUseCase } from "@/application/useCases/tag/get-all-tag.use-case";
-import type { CreateTagInput } from "../../schemas/tag/create-tag.schema";
 
 export class TagController {
   constructor(
@@ -10,22 +10,25 @@ export class TagController {
     private getAllTagsUseCase: GetAllTagsUseCase,
   ) {}
 
-  create = async (c: Context) => {
-    const body = c.req.valid("json" as never) as CreateTagInput;
-    const userId = c.get("userId") as string;
+  create = factory.createHandlers(
+    schemaValidator("json", CreateTagSchema),
+    async (c) => {
+      const body = c.req.valid("json");
+      const userId = c.get("userId");
 
-    const result = await this.createTagUseCase.create({
-      ...body,
-      userId,
-    });
+      const result = await this.createTagUseCase.create({
+        ...body,
+        userId,
+      });
 
-    return c.json(result, 201);
-  };
+      return c.json(result, 201);
+    },
+  );
 
-  findAll = async (c: Context) => {
-    const userId = c.get("userId") as string;
+  findAll = factory.createHandlers(async (c) => {
+    const userId = c.get("userId");
     const result = await this.getAllTagsUseCase.execute(userId);
 
     return c.json(result, 200);
-  };
+  });
 }

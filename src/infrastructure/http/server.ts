@@ -3,15 +3,24 @@ import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 import { prisma } from "../database/prisma";
 
-import { AuthRouter, accountRouter, categoryRouter, tagRouter } from "./routes";
+import {
+  createAuthRouter,
+  createAccountRouter,
+  createCategoryRouter,
+  createTagRouter,
+  createTransactionRouter,
+} from "./routes";
 
 import { authMiddleware } from "./middlewares/auth.middleware";
-import { transactionRouter } from "./modules/transaction/router";
+import type { Container } from "@/composition/container";
 
 export class Server {
   private app = new Hono().basePath("/api");
 
-  constructor(private readonly port: string) {}
+  constructor(
+    private readonly port: string,
+    private readonly container: Container,
+  ) {}
 
   private async initDatabase() {
     await prisma.$queryRaw`SELECT 1`;
@@ -23,13 +32,22 @@ export class Server {
       return c.text("ok");
     });
 
-    this.app.route("/auth", AuthRouter);
+    this.app.route("/auth", createAuthRouter(this.container.authController));
 
     this.app.use(authMiddleware);
-    this.app.route("/category", categoryRouter);
-    this.app.route("/account", accountRouter);
-    this.app.route("/tag", tagRouter);
-    this.app.route("/transaction", transactionRouter);
+    this.app.route(
+      "/category",
+      createCategoryRouter(this.container.categoryController),
+    );
+    this.app.route(
+      "/account",
+      createAccountRouter(this.container.accountController),
+    );
+    this.app.route("/tag", createTagRouter(this.container.tagController));
+    this.app.route(
+      "/transaction",
+      createTransactionRouter(this.container.transactionController),
+    );
 
     this.app.notFound((c) => {
       return c.json(

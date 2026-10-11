@@ -1,30 +1,35 @@
-import type { Context } from "hono";
-import { RegisterUseCase } from "../../../application/useCases/auth/register.use-case";
-import type { RegisterSchema } from "../schemas/auth/register.schema";
-import type { LoginSchema } from "../schemas/auth/login.schema";
-import { LoginUseCase } from "../../../application/useCases/auth/login.use-case";
+import { LoginSchema } from "../schemas/auth/login.schema";
+import { RegisterSchema } from "../schemas/auth/register.schema";
+import { factory } from "../factory";
+import { schemaValidator } from "../middlewares/schema-validator.middleware";
+import type { LoginUseCase } from "../../../application/useCases/auth/login.use-case";
+import type { RegisterUseCase } from "../../../application/useCases/auth/register.use-case";
 
-class AuthController {
+export class AuthController {
   constructor(
     private readonly loginUseCase: LoginUseCase,
     private readonly registerUseCase: RegisterUseCase,
   ) {}
 
-  login = async (c: Context) => {
-    const body = c.req.valid("json" as never) as LoginSchema;
+  login = factory.createHandlers(
+    schemaValidator("json", LoginSchema),
+    async (c) => {
+      const body = c.req.valid("json");
 
-    const result = await this.loginUseCase.execute(body);
+      const result = await this.loginUseCase.execute(body);
 
-    return c.json(result, 200);
-  };
+      return c.json(result, 200);
+    },
+  );
 
-  register = async (c: Context) => {
-    const body = c.req.valid("json" as never) as RegisterSchema;
+  register = factory.createHandlers(
+    schemaValidator("json", RegisterSchema),
+    async (c) => {
+      const body = c.req.valid("json");
 
-    const result = await this.registerUseCase.execute(body);
+      const result = await this.registerUseCase.execute(body);
 
-    return c.json(result, 201);
-  };
+      return c.json(result, 201);
+    },
+  );
 }
-
-export default AuthController;

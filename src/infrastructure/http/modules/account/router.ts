@@ -1,33 +1,11 @@
 import { Hono } from "hono";
-import { CreateAccountUseCase } from "@/application/useCases/account/create-account.use-case";
-import { GetAllAccountsUseCase } from "@/application/useCases/account/get-all-accounts.use-case";
-import { AccountDatasourceImpl } from "@/infrastructure/datasources/account.datasource.impl";
-import { AccountRepositoryImpl } from "@/infrastructure/repositories/account.repository.impl";
-import { UuidGenerator } from "@/infrastructure/adapters/uuidGenerator";
+import type { AccountController } from "./account.controller";
 
-import { AccountController } from "./account.controller";
-import { schemaValidator } from "../../middlewares/schema-validator.middleware";
-import { CreateAccountSchema } from "../../schemas/account/create-account.schema";
+export const createAccountRouter = (controller: AccountController) => {
+  const accountRouter = new Hono();
 
-export const accountRouter = new Hono();
+  accountRouter.get("/", ...controller.findAll);
+  accountRouter.post("/", ...controller.create);
 
-const datasource = new AccountDatasourceImpl();
-const repository = new AccountRepositoryImpl(datasource);
-const uuidGenerator = new UuidGenerator();
-const createAccountUseCase = new CreateAccountUseCase(
-  repository,
-  uuidGenerator,
-);
-const getAllAccountsUseCase = new GetAllAccountsUseCase(repository);
-const controller = new AccountController(
-  createAccountUseCase,
-  getAllAccountsUseCase,
-);
-
-accountRouter.post(
-  "/",
-  schemaValidator("json", CreateAccountSchema),
-  controller.create,
-);
-
-accountRouter.get("/", controller.findAll);
+  return accountRouter;
+};
