@@ -114,7 +114,7 @@ enum TransactionType {
 model Transaction {
   id              String          @id @default(uuid())
   userId          String          @map("user_id")
-  categoryId      String          @map("category_id")
+  categoryId      String?         @map("category_id")
   accountId       String          @map("account_id")
   toAccountId     String?         @map("to_account_id")
   amount          Decimal         @db.Decimal
@@ -126,7 +126,7 @@ model Transaction {
   deletedAt       DateTime?       @map("deleted_at")
 
   user            User             @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  category        Category         @relation(fields: [categoryId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  category        Category?        @relation(fields: [categoryId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   account         Account          @relation("AccountTransactions", fields: [accountId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   toAccount       Account?         @relation("ToAccountTransactions", fields: [toAccountId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   transactionTags TransactionTag[]
