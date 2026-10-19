@@ -1,26 +1,15 @@
 import { prisma } from "../database/prisma";
-import type { AccountType } from "@generated/prisma/enums";
 
 import type { AccountDatasource } from "@domain/datasources";
 import { AccountEntity } from "@domain/entities";
 
 export class AccountDatasourceImpl implements AccountDatasource {
   async create(account: AccountEntity): Promise<AccountEntity> {
-    const created = await prisma.account.create({
-      data: {
-        id: account.id,
-        userId: account.userId,
-        name: account.name,
-        accountType: account.accountType as unknown as AccountType,
-        initialBalance: account.initialBalance,
-        icon: account.icon,
-        description: account.description,
-        color: account.color,
-        status: account.status,
-      },
+    await prisma.account.create({
+      data: account.toPersistence(),
     });
 
-    return AccountEntity.fromObject(created);
+    return account;
   }
 
   async findAll(userId: string): Promise<AccountEntity[]> {
@@ -32,6 +21,19 @@ export class AccountDatasourceImpl implements AccountDatasource {
       },
     });
 
-    return accounts.map((account) => AccountEntity.fromObject(account));
+    return accounts.map(
+      (account) =>
+        new AccountEntity(
+          account.id,
+          account.userId,
+          account.name,
+          account.accountType,
+          account.initialBalance.toNumber(),
+          account.icon,
+          account.status,
+          account.description,
+          account.color,
+        ),
+    );
   }
 }

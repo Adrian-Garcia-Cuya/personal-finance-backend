@@ -4,16 +4,16 @@ export class UserEntity {
     public readonly email: string,
     public readonly password: string,
     public readonly name: string,
-    public readonly lastName: string,
+    public readonly lastName: string | null,
   ) {}
 
-  static fromObject(object: { [key: string]: any }): UserEntity {
-    return new UserEntity(
-      object.id,
-      object.email,
-      object.password,
-      object.name,
-      object.lastName,
-    );
+  toPersistence() {
+    return {
+      id: this.id,
+      email: this.email,
+      password: this.password,
+      name: this.name,
+      lastName: this.lastName ?? null,
+    };
   }
 }

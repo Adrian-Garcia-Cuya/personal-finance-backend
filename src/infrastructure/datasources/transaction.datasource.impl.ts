@@ -1,6 +1,6 @@
 import { prisma } from "../database/prisma";
+import { TransactionEntity } from "@/domain/entities";
 import type { TransactionDatasource } from "@/domain/datasources/transaction.datasource";
-import { TransactionEntity } from "@/domain/entities/transaction/transaction.entity";
 
 export class TransactionDatasourceImpl implements TransactionDatasource {
   async create(transaction: TransactionEntity): Promise<TransactionEntity> {

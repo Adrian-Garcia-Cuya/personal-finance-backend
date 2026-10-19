@@ -4,16 +4,11 @@ import { prisma } from "../database/prisma";
 
 export class TagDatasourceImpl implements TagDatasource {
   async create(tag: TagEntity): Promise<TagEntity> {
-    const created = await prisma.tag.create({
-      data: {
-        id: tag.id,
-        name: tag.name,
-        status: tag.status,
-        user: tag.userId ? { connect: { id: tag.userId } } : undefined,
-      },
+    await prisma.tag.create({
+      data: tag.toPersistence(),
     });
 
-    return TagEntity.fromObject(created);
+    return tag;
   }
 
   async findAll(userId: string): Promise<TagEntity[]> {
@@ -25,6 +20,8 @@ export class TagDatasourceImpl implements TagDatasource {
       },
     });
 
-    return tags.map((tag) => TagEntity.fromObject(tag));
+    return tags.map(
+      (tag) => new TagEntity(tag.id, tag.userId, tag.name, tag.status),
+    );
   }
 }

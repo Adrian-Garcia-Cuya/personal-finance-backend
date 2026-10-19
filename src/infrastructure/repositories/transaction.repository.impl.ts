@@ -1,5 +1,5 @@
 import type { TransactionDatasource } from "@/domain/datasources/transaction.datasource";
-import type { TransactionEntity } from "@/domain/entities/transaction/transaction.entity";
+import type { TransactionEntity } from "@/domain/entities";
 import type { TransactionRepository } from "@/domain/repositories/transaction.repository";
 
 export class TransactionRepositoryImpl implements TransactionRepository {

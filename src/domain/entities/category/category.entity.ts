@@ -1,7 +1,4 @@
-export enum CategoryType {
-  INCOME = "income",
-  EXPENSE = "expense",
-}
+import type { CategoryType } from "./types";
 
 export class CategoryEntity {
   constructor(
@@ -16,17 +13,17 @@ export class CategoryEntity {
     public readonly color?: string | null,
   ) {}
 
-  static fromObject(object: { [key: string]: any }): CategoryEntity {
-    return new CategoryEntity(
-      object.id,
-      object.name,
-      object.type,
-      object.icon,
-      object.status,
-      object.userId,
-      object.parentId,
-      object.description,
-      object.color,
-    );
+  toPersistence() {
+    return {
+      id: this.id,
+      name: this.name,
+      type: this.type,
+      icon: this.icon,
+      status: this.status,
+      userId: this.userId ?? null,
+      parentId: this.parentId ?? null,
+      description: this.description ?? null,
+      color: this.color ?? null,
+    };
   }
 }

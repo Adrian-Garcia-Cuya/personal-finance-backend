@@ -7,20 +7,20 @@ export class UserDatasourceImpl implements UserDatasource {
     const user = await prisma.user.findUnique({ where: { email } });
     if (!user) throw new Error("User not found");
 
-    return UserEntity.fromObject(user);
+    return new UserEntity(
+      user.id,
+      user.email,
+      user.password,
+      user.name,
+      user.lastName,
+    );
   }
 
   async create(user: UserEntity): Promise<UserEntity> {
-    const created = await prisma.user.create({
-      data: {
-        id: user.id,
-        name: user.name,
-        lastName: user.lastName,
-        email: user.email,
-        password: user.password,
-      },
+    await prisma.user.create({
+      data: user.toPersistence(),
     });
 
-    return UserEntity.fromObject(created);
+    return user;
   }
 }

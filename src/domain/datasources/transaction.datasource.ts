@@ -1,4 +1,4 @@
-import type { TransactionEntity } from "../entities/transaction/transaction.entity";
+import type { TransactionEntity } from "../entities";
 
 export abstract class TransactionDatasource {
   abstract create(transaction: TransactionEntity): Promise<TransactionEntity>;

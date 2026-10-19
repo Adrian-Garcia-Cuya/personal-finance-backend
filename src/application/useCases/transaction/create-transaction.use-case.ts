@@ -1,6 +1,6 @@
+import { TransactionEntity } from "@/domain/entities";
 import type { CreateTransactionDTO } from "@/application/dtos/transaction/create-transaction.dto";
 import type { IdGenerator } from "@/application/ports/idGenerator";
-import { TransactionEntity } from "@/domain/entities/transaction/transaction.entity";
 import type { TransactionRepository } from "@/domain/repositories/transaction.repository";
 
 export class CreateTransactionUseCase {

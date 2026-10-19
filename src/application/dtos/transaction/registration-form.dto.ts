@@ -1,5 +1,5 @@
-import type { AccountEntity } from "@/domain/entities/account.entity";
-import type { CategoryEntity } from "@/domain/entities/category.entity";
+import type { AccountEntity } from "@/domain/entities/account/account.entity";
+import type { CategoryEntity } from "@/domain/entities/category/category.entity";
 import type { TagEntity } from "@/domain/entities/tag.entity";
 
 export interface RegistrationFormDataDTO {
