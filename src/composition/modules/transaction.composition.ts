@@ -1,3 +1,7 @@
+import type { IdGenerator } from "@/application/ports/idGenerator";
+import { CreateTransactionUseCase } from "@/application/useCases/transaction/create-transaction.use-case";
+import { TransactionDatasourceImpl } from "@/infrastructure/datasources/transaction.datasource.impl";
+import { TransactionRepositoryImpl } from "@/infrastructure/repositories/transaction.repository.impl";
 import { GetRegistrationFormUseCase } from "@/application/useCases/transaction/get-registration-form.use-case";
 import { AccountDatasourceImpl } from "@/infrastructure/datasources/account.datasource.impl";
 import { CategoryDatasourceImpl } from "@/infrastructure/datasources/category.datasource.impl";
@@ -7,7 +11,9 @@ import { AccountRepositoryImpl } from "@/infrastructure/repositories/account.rep
 import { CategoryRepositoryImpl } from "@/infrastructure/repositories/category.repository.impl";
 import { TagRepositoryImpl } from "@/infrastructure/repositories/tag.repository.impl";
 
-export const buildTransactionComposition = () => {
+export const buildTransactionComposition = (deps: {
+  uuidGenerator: IdGenerator;
+}) => {
   const categoryDatasource = new CategoryDatasourceImpl();
   const accountDatasource = new AccountDatasourceImpl();
   const tagDatasource = new TagDatasourceImpl();
@@ -21,5 +27,17 @@ export const buildTransactionComposition = () => {
     tagRepository,
   );
 
-  return new TransactionController(getRegistrationFormUseCase);
+  const transactionDatasource = new TransactionDatasourceImpl();
+  const transactionRepository = new TransactionRepositoryImpl(
+    transactionDatasource,
+  );
+  const createTransactionUseCase = new CreateTransactionUseCase(
+    transactionRepository,
+    deps.uuidGenerator,
+  );
+
+  return new TransactionController(
+    getRegistrationFormUseCase,
+    createTransactionUseCase,
+  );
 };

@@ -13,7 +13,7 @@ export const buildContainer = () => {
     accountController: buildAccountComposition({ uuidGenerator }),
     categoryController: buildCategoryComposition({ uuidGenerator }),
     tagController: buildTagComposition({ uuidGenerator }),
-    transactionController: buildTransactionComposition(),
+    transactionController: buildTransactionComposition({ uuidGenerator }),
   };
 };
 
