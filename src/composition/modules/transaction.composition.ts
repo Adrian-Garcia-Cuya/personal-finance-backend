@@ -32,8 +32,9 @@ export const buildTransactionComposition = (deps: {
     transactionDatasource,
   );
   const createTransactionUseCase = new CreateTransactionUseCase(
-    transactionRepository,
     deps.uuidGenerator,
+    transactionRepository,
+    tagRepository,
   );
 
   return new TransactionController(

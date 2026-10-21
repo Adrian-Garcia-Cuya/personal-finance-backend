@@ -1,29 +1,49 @@
 import type { TransactionType } from "./types";
+import type { TagId } from "./valueObjects/tagId.value-object";
+
+interface TransactionProps {
+  id: string;
+  userId: string;
+  accountId: string;
+  amount: number;
+  type: TransactionType;
+  transactionDate: Date;
+  tagIds?: TagId[];
+  categoryId?: string | null;
+  toAccountId?: string | null;
+  description?: string | null;
+}
 
 export class TransactionEntity {
-  constructor(
-    private readonly id: string,
-    private readonly userId: string,
-    private readonly accountId: string,
-    private readonly amount: number,
-    private readonly type: TransactionType,
-    private readonly transactionDate: Date,
-    private readonly categoryId?: string | null,
-    private readonly toAccountId?: string | null,
-    private readonly description?: string | null,
+  private constructor(
+    readonly id: string,
+    readonly userId: string,
+    readonly accountId: string,
+    readonly amount: number,
+    readonly type: TransactionType,
+    readonly transactionDate: Date,
+    private readonly tagIds: TagId[],
+    readonly categoryId?: string | null,
+    readonly toAccountId?: string | null,
+    readonly description?: string | null,
   ) {}
 
-  toPersistence() {
-    return {
-      id: this.id,
-      userId: this.userId,
-      accountId: this.accountId,
-      categoryId: this.categoryId ?? null,
-      toAccountId: this.toAccountId ?? null,
-      type: this.type,
-      amount: this.amount,
-      transactionDate: this.transactionDate,
-      description: this.description ?? null,
-    };
+  static create(props: TransactionProps) {
+    return new TransactionEntity(
+      props.id,
+      props.userId,
+      props.accountId,
+      props.amount,
+      props.type,
+      props.transactionDate,
+      props.tagIds ?? [],
+      props.categoryId ?? null,
+      props.toAccountId ?? null,
+      props.description ?? null,
+    );
+  }
+
+  getTagIds(): TagId[] {
+    return [...this.tagIds];
   }
 }

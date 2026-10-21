@@ -2,25 +2,33 @@ import { TransactionEntity } from "@/domain/entities";
 import type { CreateTransactionDTO } from "@/application/dtos/transaction/create-transaction.dto";
 import type { IdGenerator } from "@/application/ports/idGenerator";
 import type { TransactionRepository } from "@/domain/repositories/transaction.repository";
+import { TagId } from "@/domain/entities/transaction/valueObjects/tagId.value-object";
+import type { TagRepository } from "@/domain/repositories";
 
 export class CreateTransactionUseCase {
   constructor(
-    private readonly transactionRepository: TransactionRepository,
     private readonly idGenerator: IdGenerator,
+    private readonly transactionRepository: TransactionRepository,
+    private readonly tagRepository: TagRepository,
   ) {}
 
   async execute(data: CreateTransactionDTO) {
-    const transaction = new TransactionEntity(
-      this.idGenerator.generate(),
-      data.userId,
-      data.accountId,
-      data.amount,
-      data.type,
-      data.transactionDate,
-      data.categoryId,
-      data.toAccountId,
-      data.description,
-    );
+    const tagIds = (data.tagIds ?? []).map(TagId.create);
+
+    if (tagIds.length) {
+      const found = await this.tagRepository.findByIds(
+        data.tagIds!,
+        data.userId,
+      );
+      if (found.length !== new Set(data.tagIds).size)
+        throw new Error("Se encontraron tags no existentes");
+    }
+
+    const transaction = TransactionEntity.create({
+      id: this.idGenerator.generate(),
+      ...data,
+      tagIds,
+    });
 
     await this.transactionRepository.create(transaction);
 

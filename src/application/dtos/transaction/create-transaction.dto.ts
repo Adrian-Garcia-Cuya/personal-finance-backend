@@ -6,6 +6,7 @@ export interface CreateTransactionDTO {
   amount: number;
   type: TransactionType;
   transactionDate: Date;
+  tagIds: string[];
   categoryId?: string | null;
   toAccountId?: string | null;
   description?: string | null;

@@ -12,4 +12,8 @@ export class TagRepositoryImpl implements TagRepository {
   findAll(userId: string): Promise<TagEntity[]> {
     return this.tagDatasource.findAll(userId);
   }
+
+  findByIds(ids: string[], userId: string): Promise<TagEntity[]> {
+    return this.tagDatasource.findByIds(ids, userId);
+  }
 }

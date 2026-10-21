@@ -11,6 +11,21 @@ export class TagDatasourceImpl implements TagDatasource {
     return tag;
   }
 
+  async findByIds(ids: string[], userId: string): Promise<TagEntity[]> {
+    const tags = await prisma.tag.findMany({
+      where: {
+        id: { in: ids },
+        status: true,
+        deletedAt: null,
+        userId: userId,
+      },
+    });
+
+    return tags.map(
+      (tag) => new TagEntity(tag.id, tag.userId, tag.name, tag.status),
+    );
+  }
+
   async findAll(userId: string): Promise<TagEntity[]> {
     const tags = await prisma.tag.findMany({
       where: {
