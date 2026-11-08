@@ -3,11 +3,13 @@ import { schemaValidator } from "../../middlewares/schema-validator.middleware";
 import { CreateTransactionSchema } from "../../schemas/transaction/create-transaction.schema";
 import type { CreateTransactionUseCase } from "@/application/useCases/transaction/create-transaction.use-case";
 import type { GetRegistrationFormUseCase } from "@/application/useCases/transaction/get-registration-form.use-case";
+import type { GetAllTransactionsUseCase } from "@/application/useCases/transaction/get-all-transactions.use-case";
 
 export class TransactionController {
   constructor(
     private readonly getRegistrationFormUseCase: GetRegistrationFormUseCase,
     private readonly createTransactionUseCase: CreateTransactionUseCase,
+    private readonly getAllTransactionsUseCase: GetAllTransactionsUseCase,
   ) {}
 
   create = factory.createHandlers(
@@ -23,6 +25,13 @@ export class TransactionController {
       return c.json(result, 201);
     },
   );
+
+  findAll = factory.createHandlers(async (c) => {
+    const userId = c.get("userId");
+    const data = await this.getAllTransactionsUseCase.execute(userId);
+
+    return c.json({ success: true, data }, 200);
+  });
 
   getFormData = factory.createHandlers(async (c) => {
     const userId = c.get("userId");

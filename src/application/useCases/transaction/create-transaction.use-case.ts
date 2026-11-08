@@ -1,8 +1,8 @@
 import { TransactionEntity } from "@/domain/entities";
+import { TagId } from "@/domain/entities/transaction/valueObjects/tagId.value-object";
 import type { CreateTransactionDTO } from "@/application/dtos/transaction/create-transaction.dto";
 import type { IdGenerator } from "@/application/ports/idGenerator";
 import type { TransactionRepository } from "@/domain/repositories/transaction.repository";
-import { TagId } from "@/domain/entities/transaction/valueObjects/tagId.value-object";
 import type { TagRepository } from "@/domain/repositories";
 
 export class CreateTransactionUseCase {

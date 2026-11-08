@@ -5,6 +5,7 @@ export const createTransactionRouter = (controller: TransactionController) => {
   const transactionRouter = new Hono();
 
   transactionRouter.get("/registration-form", ...controller.getFormData);
+  transactionRouter.get("/", ...controller.findAll);
   transactionRouter.post("/", ...controller.create);
 
   return transactionRouter;
