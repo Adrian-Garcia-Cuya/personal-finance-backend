@@ -9,7 +9,10 @@ export const CreateTransactionSchema = z
     transactionDate: z.iso
       .datetime({ offset: true })
       .transform((value) => new Date(value)),
-    tagIds: z.array(z.string()),
+    tagIds: z
+      .array(z.string())
+      .nullish()
+      .transform((value) => value ?? []),
     categoryId: z.uuid().nullish(),
     toAccountId: z.uuid().nullish(),
     description: z.string().nullish(),

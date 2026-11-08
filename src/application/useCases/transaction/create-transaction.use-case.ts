@@ -13,14 +13,12 @@ export class CreateTransactionUseCase {
   ) {}
 
   async execute(data: CreateTransactionDTO) {
-    const tagIds = (data.tagIds ?? []).map(TagId.create);
+    const rawTagIds = data.tagIds ?? [];
+    const tagIds = rawTagIds.map(TagId.create);
 
     if (tagIds.length) {
-      const found = await this.tagRepository.findByIds(
-        data.tagIds!,
-        data.userId,
-      );
-      if (found.length !== new Set(data.tagIds).size)
+      const found = await this.tagRepository.findByIds(rawTagIds, data.userId);
+      if (found.length !== new Set(rawTagIds).size)
         throw new Error("Se encontraron tags no existentes");
     }
 
