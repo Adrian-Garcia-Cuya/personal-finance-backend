@@ -1,5 +1,6 @@
 declare module "bun" {
   interface Env {
+    HOST: string;
     PORT: string;
     JWT_SECRET: string;
     DATABASE_URL: string;

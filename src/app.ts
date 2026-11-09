@@ -3,7 +3,8 @@ import { Server } from "./infrastructure/http/server";
 
 async function main() {
   const container = buildContainer();
-  const server = new Server(process.env.PORT || "3004", container);
+  const hostname = process.env.HOST;
+  const server = new Server(process.env.PORT || "3004", hostname, container);
   await server.start();
 }
 

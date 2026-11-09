@@ -19,6 +19,7 @@ export class Server {
 
   constructor(
     private readonly port: string,
+    private readonly hostname: string,
     private readonly container: Container,
   ) {}
 
@@ -88,6 +89,7 @@ export class Server {
     console.log("Server started on port", this.port);
 
     Bun.serve({
+      hostname: this.hostname,
       port: Number(this.port),
       fetch: this.app.fetch,
     });
