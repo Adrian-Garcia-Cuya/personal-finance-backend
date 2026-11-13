@@ -3,7 +3,10 @@ import type { TransactionPeriodFilter } from "@/application/dtos/transaction/tra
 import type { TransactionSummaryDTO } from "@/application/dtos/transaction/transaction-summary.dto";
 
 export interface TransactionQuery {
-  getAll(userId: string): Promise<TransactionResponseDTO[]>;
+  getAll(
+    userId: string,
+    period: TransactionPeriodFilter,
+  ): Promise<TransactionResponseDTO[]>;
 
   getSummary(
     userId: string,

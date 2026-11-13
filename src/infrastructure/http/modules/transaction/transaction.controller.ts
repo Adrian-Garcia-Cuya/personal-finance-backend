@@ -29,12 +29,16 @@ export class TransactionController {
     },
   );
 
-  findAll = factory.createHandlers(async (c) => {
-    const userId = c.get("userId");
-    const data = await this.getAllTransactionsUseCase.execute(userId);
+  findAll = factory.createHandlers(
+    schemaValidator("query", TransactionPeriodSchema),
+    async (c) => {
+      const userId = c.get("userId");
+      const period = c.req.valid("query");
+      const data = await this.getAllTransactionsUseCase.execute(userId, period);
 
-    return c.json({ success: true, data }, 200);
-  });
+      return c.json({ success: true, data }, 200);
+    },
+  );
 
   getSummary = factory.createHandlers(
     schemaValidator("query", TransactionPeriodSchema),

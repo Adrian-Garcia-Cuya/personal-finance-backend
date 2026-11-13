@@ -6,11 +6,15 @@ import type { TransactionQuery } from "@/application/ports/transaction-query";
 import { prisma } from "@/infrastructure/database/prisma";
 
 export class PrismaTransactionQuery implements TransactionQuery {
-  async getAll(userId: string): Promise<TransactionResponseDTO[]> {
+  async getAll(
+    userId: string,
+    period: TransactionPeriodFilter,
+  ): Promise<TransactionResponseDTO[]> {
     const transactions = await prisma.transaction.findMany({
       where: {
         userId,
         deletedAt: null,
+        transactionDate: this.getPeriodDateFilter(period),
       },
       select: {
         id: true,
