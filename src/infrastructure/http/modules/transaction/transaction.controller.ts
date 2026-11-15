@@ -19,16 +19,20 @@ export class TransactionController {
   ) {}
 
   create = factory.createHandlers(
-    schemaValidator("json", CreateTransactionSchema),
+    schemaValidator("json", CreateTransactionSchema.array()),
     async (c) => {
       const body = c.req.valid("json");
       const userId = c.get("userId");
-      const result = await this.createTransactionUseCase.execute({
-        ...body,
-        userId,
-      });
+      const results = [];
 
-      return c.json(result, 201);
+      for (const transaction of body) {
+        results.push(await this.createTransactionUseCase.execute({
+          ...transaction,
+          userId,
+        }));
+      }
+
+      return c.json(results, 201);
     },
   );
 
