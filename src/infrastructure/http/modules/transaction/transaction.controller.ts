@@ -8,6 +8,7 @@ import type { CreateTransactionUseCase } from "@/application/useCases/transactio
 import type { GetRegistrationFormUseCase } from "@/application/useCases/transaction/get-registration-form.use-case";
 import type { GetAllTransactionsUseCase } from "@/application/useCases/transaction/get-all-transactions.use-case";
 import type { GetTransactionSummaryUseCase } from "@/application/useCases/transaction/get-transaction-summary.use-case";
+import type { GetExpensesByCategoryUseCase } from "@/application/useCases/transaction/get-expenses-by-category.use-case";
 
 export class TransactionController {
   constructor(
@@ -16,6 +17,7 @@ export class TransactionController {
     private readonly getAllTransactionsUseCase: GetAllTransactionsUseCase,
     private readonly getTransactionSummaryUseCase: GetTransactionSummaryUseCase,
     private readonly getMonthlyIncomeExpenseUseCase: GetMonthlyIncomeExpenseUseCase,
+    private readonly getExpensesByCategoryUseCase: GetExpensesByCategoryUseCase,
   ) {}
 
   create = factory.createHandlers(
@@ -63,6 +65,16 @@ export class TransactionController {
       const userId = c.get("userId");
       const { month } = c.req.valid("query");
       const data = await this.getMonthlyIncomeExpenseUseCase.execute(userId, month);
+      return c.json({ success: true, data }, 200);
+    },
+  );
+
+  getExpensesByCategory = factory.createHandlers(
+    schemaValidator("query", TransactionMonthSchema),
+    async (c) => {
+      const userId = c.get("userId");
+      const { month } = c.req.valid("query");
+      const data = await this.getExpensesByCategoryUseCase.execute(userId, month);
       return c.json({ success: true, data }, 200);
     },
   );

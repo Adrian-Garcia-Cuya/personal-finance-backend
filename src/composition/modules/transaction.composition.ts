@@ -3,6 +3,7 @@ import { CreateTransactionUseCase } from "@/application/useCases/transaction/cre
 import { GetAllTransactionsUseCase } from "@/application/useCases/transaction/get-all-transactions.use-case";
 import { GetTransactionSummaryUseCase } from "@/application/useCases/transaction/get-transaction-summary.use-case";
 import { GetMonthlyIncomeExpenseUseCase } from "@/application/useCases/transaction/get-monthly-income-expense.use-case";
+import { GetExpensesByCategoryUseCase } from "@/application/useCases/transaction/get-expenses-by-category.use-case";
 import { TransactionDatasourceImpl } from "@/infrastructure/datasources/transaction.datasource.impl";
 import { TransactionRepositoryImpl } from "@/infrastructure/repositories/transaction.repository.impl";
 import { PrismaTransactionQuery } from "@/infrastructure/queries/prisma-transaction.query";
@@ -43,6 +44,7 @@ export const buildTransactionComposition = (deps: {
     transactionQuery,
   );
   const getMonthlyIncomeExpenseUseCase = new GetMonthlyIncomeExpenseUseCase(transactionQuery);
+  const getExpensesByCategoryUseCase = new GetExpensesByCategoryUseCase(transactionQuery);
   const createTransactionUseCase = new CreateTransactionUseCase(
     deps.uuidGenerator,
     transactionRepository,
@@ -55,5 +57,6 @@ export const buildTransactionComposition = (deps: {
     getAllTransactionsUseCase,
     getTransactionSummaryUseCase,
     getMonthlyIncomeExpenseUseCase,
+    getExpensesByCategoryUseCase,
   );
 };

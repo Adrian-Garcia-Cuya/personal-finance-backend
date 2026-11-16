@@ -7,6 +7,7 @@ export const createTransactionRouter = (controller: TransactionController) => {
   transactionRouter.get("/registration-form", ...controller.getFormData);
   transactionRouter.get("/summary", ...controller.getSummary);
   transactionRouter.get("/charts/income-expense", ...controller.getMonthlyIncomeExpense);
+  transactionRouter.get("/charts/expenses-by-category", ...controller.getExpensesByCategory);
   transactionRouter.get("/", ...controller.findAll);
   transactionRouter.post("/", ...controller.create);
 

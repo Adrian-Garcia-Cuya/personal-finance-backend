@@ -1,4 +1,5 @@
 import type { TransactionResponseDTO } from "@/application/dtos/transaction/transaction-response.dto";
+import type { CategoryExpenseDTO } from "@/application/dtos/transaction/category-expense.dto";
 import type { TransactionPeriodFilter } from "@/application/dtos/transaction/transaction-period-filter.dto";
 import type { TransactionSummaryDTO } from "@/application/dtos/transaction/transaction-summary.dto";
 import { Prisma } from "../../../generated/prisma/client";
@@ -7,6 +8,45 @@ import type { TransactionQuery } from "@/application/ports/transaction-query";
 import { prisma } from "@/infrastructure/database/prisma";
 
 export class PrismaTransactionQuery implements TransactionQuery {
+  async getExpensesByCategory(
+    userId: string,
+    month: string,
+  ): Promise<CategoryExpenseDTO[]> {
+    const startDate = new Date(`${month}-01T00:00:00.000Z`);
+    const endDate = new Date(startDate);
+    endDate.setUTCMonth(endDate.getUTCMonth() + 1);
+
+    const totals = await prisma.transaction.groupBy({
+      by: ["categoryId"],
+      where: {
+        userId,
+        deletedAt: null,
+        type: "expense",
+        categoryId: { not: null },
+        transactionDate: { gte: startDate, lt: endDate },
+      },
+      _sum: { amount: true },
+    });
+
+    const amountsByCategory = new Map(
+      totals.flatMap(({ categoryId, _sum }) =>
+        categoryId === null ? [] : [[categoryId, _sum.amount] as const],
+      ),
+    );
+    if (amountsByCategory.size === 0) return [];
+
+    const categories = await prisma.category.findMany({
+      where: { id: { in: [...amountsByCategory.keys()] } },
+      select: { id: true, name: true },
+    });
+
+    return categories.map((category) => ({
+      categoryId: category.id,
+      categoryName: category.name,
+      amount: amountsByCategory.get(category.id)?.toNumber() ?? 0,
+    }));
+  }
+
   async getAll(
     userId: string,
     period: TransactionPeriodFilter,
